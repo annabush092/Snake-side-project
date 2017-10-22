@@ -5,8 +5,9 @@ const allDirections = ['north', 'east', 'south', 'west']
 class Robot {
 
   constructor() {
-    this.bearing = "north"
-    this.coordinates = [0, 0]
+    this.bearing = "east"
+    this.coordinates = [15, 15]
+    //this.app is set by app constructor
   }
 
   orient(direction) {
@@ -18,12 +19,25 @@ class Robot {
   }
 
   goToCoords(x, y) {
-    if(x !== undefined){
+    if(x!==undefined && x<50 && x>=0){
       this.coordinates[0] = x
+    }else {
+      // if(x>=50 || x<0)
+      this.youDied()
     }
-    if(y !== undefined) {
+
+    if(y!==undefined && y<35 && y>=0) {
       this.coordinates[1] = y
+    }else{
+      //  if(x>=30 || x<0)
+      this.youDied()
     }
+  }
+
+  youDied() {
+    clearInterval(timer)
+    window.alert("You died. :(")
+    throw "you died"
   }
 
   //given { x: int, y: int, direction: string }
@@ -32,72 +46,105 @@ class Robot {
     this.orient(params.direction)
   }
 
-  //helper method for turnRight() and turnLeft()
-  generateNewDir(change) {
-    let i = allDirections.findIndex(d => (d === this.bearing))
-    let newI = i + change
-    if(newI<0) {
-      newI = 3
-    }else if(newI > 3) {
-      newI = 0
+  // //helper method for turnRight() and turnLeft()
+  // generateNewDir(change) {
+  //   let i = allDirections.findIndex(d => (d === this.bearing))
+  //   let newI = i + change
+  //   if(newI<0) {
+  //     newI = 3
+  //   }else if(newI > 3) {
+  //     newI = 0
+  //   }
+  //   this.bearing = allDirections[newI]
+  //   // console.log("Changed Direction.")
+  //   // console.log("coordinates: ", this.coordinates[0], ', ', this.coordinates[1])
+  //   // console.log("direction: ", this.bearing)
+  // }
+
+  turnEast() {
+    if(this.bearing !== 'west') {
+      this.bearing = "east"
     }
-    this.bearing = allDirections[newI]
-    // console.log("Changed Direction.")
-    // console.log("coordinates: ", this.coordinates[0], ', ', this.coordinates[1])
-    // console.log("direction: ", this.bearing)
   }
 
-  turnRight() {
-    this.generateNewDir(1)
+  turnWest() {
+    if(this.bearing !== 'east') {
+      this.bearing = 'west'
+    }
   }
 
-  turnLeft() {
-    this.generateNewDir(-1)
+  turnNorth() {
+    if(this.bearing !== 'south') {
+      this.bearing = 'north'
+    }
+  }
+
+  turnSouth() {
+    if(this.bearing !== 'north') {
+      this.bearing = 'south'
+    }
   }
 
   advance() {
     switch(this.bearing) {
       case "north":
-        this.coordinates[1]++
+        this.goToCoords(this.coordinates[0], --this.coordinates[1])
         break
       case "east":
-        this.coordinates[0]++
+        this.goToCoords(++this.coordinates[0], this.coordinates[1])
         break
       case "south":
-        this.coordinates[1]--
+        this.goToCoords(this.coordinates[0], ++this.coordinates[1])
         break
       case "west":
-        this.coordinates[0]--
+        this.goToCoords(--this.coordinates[0], this.coordinates[1])
         break
     }
-    // console.log("Advanced one space.")
-    // console.log("coordinates: ", this.coordinates[0], ', ', this.coordinates[1])
-    // console.log("direction: ", this.bearing)
   }
 
-  interpretInstructions(str) {
-    const instructionArr = []
-    str.split("").forEach(function (char) {
-      switch(char) {
-        case "L":
-          instructionArr.push("turnLeft")
-          break
-        case "R":
-          instructionArr.push("turnRight")
-          break
-        case "A":
-          instructionArr.push("advance")
-          break
-      }
-    })
-    return instructionArr
-  }
-
-  evaluateInstructions(str) {
-    this.interpretInstructions(str).forEach(fxnString => {
-      // console.log(fxnString)
-      this[fxnString]()
-    })
-  }
+  // advance() {
+  //   switch(this.bearing) {
+  //     case "north":
+  //       this.coordinates[1]++
+  //       break
+  //     case "east":
+  //       this.coordinates[0]++
+  //       break
+  //     case "south":
+  //       this.coordinates[1]--
+  //       break
+  //     case "west":
+  //       this.coordinates[0]--
+  //       break
+  //   }
+  //   // console.log("Advanced one space.")
+  //   // console.log("coordinates: ", this.coordinates[0], ', ', this.coordinates[1])
+  //   // console.log("direction: ", this.bearing)
+  // }
+  //
+  // interpretInstructions(str) {
+  //   const instructionArr = []
+  //   str.split("").forEach(function (char) {
+  //     switch(char) {
+  //       case "L":
+  //         instructionArr.push("turnLeft")
+  //         break
+  //       case "R":
+  //         instructionArr.push("turnRight")
+  //         break
+  //       case "A":
+  //         instructionArr.push("advance")
+  //         break
+  //     }
+  //   })
+  //   return instructionArr
+  // }
+  //
+  // evaluateInstructions(str) {
+  //   this.interpretInstructions(str).forEach(fxnString => {
+  //     // console.log(fxnString)
+  //     this[fxnString]()
+  //   })
+  // }
 
 }
