@@ -1,6 +1,7 @@
 window.onload = function() {
 
-  showRobotStats()
+  const app = new App
+  app.fillTable()
 
   function showRobotStats() {
     const myRobot = new Robot()

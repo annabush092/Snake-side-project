@@ -1,0 +1,26 @@
+#play-board {
+  padding: 80px
+}
+
+table, tr, td {
+  border: 1px solid black;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+td {
+  width: 10%;
+}
+
+#monster {
+  height: 40px;
+  width: 40px;
+}
+
+.empty {
+  height: 70px;
+  width: 70px;
+}
