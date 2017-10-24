@@ -1,35 +1,30 @@
 'use strict';
 
-const allDirections = ['north', 'east', 'south', 'west']
-
 class Robot {
 
   constructor() {
     this.bearing = "east"
-    this.coordinates = [15, 15]
-    //this.app is set by app constructor
-  }
-
-  orient(direction) {
-    if(allDirections.includes(direction.toLowerCase())) {
-      this.bearing = direction
-    }else{
-      throw new Error("Invalid Robot Bearing")
-    }
+    this.coordinates = [5, 5]
+    this.tail = []
+    this.tailLength = 6
+    this.tail.push([this.coordinates[0], this.coordinates[1]])
+    //this.app is set in app constructor
   }
 
   goToCoords(x, y) {
-    if(x!==undefined && x<50 && x>=0){
+    if(x!==undefined && x<this.app.xboard && x>=0){
       this.coordinates[0] = x
     }else {
-      // if(x>=50 || x<0)
       this.youDied()
     }
 
-    if(y!==undefined && y<35 && y>=0) {
+    if(y!==undefined && y<this.app.yboard && y>=0) {
       this.coordinates[1] = y
     }else{
-      //  if(x>=30 || x<0)
+      this.youDied()
+    }
+
+    if(this.tail.find(coords => (coords.join(", ")===this.coordinates.join(", ")))) {
       this.youDied()
     }
   }
@@ -39,27 +34,6 @@ class Robot {
     window.alert("You died. :(")
     throw "you died"
   }
-
-  //given { x: int, y: int, direction: string }
-  place(params) {
-    this.goToCoords(params.x, params.y)
-    this.orient(params.direction)
-  }
-
-  // //helper method for turnRight() and turnLeft()
-  // generateNewDir(change) {
-  //   let i = allDirections.findIndex(d => (d === this.bearing))
-  //   let newI = i + change
-  //   if(newI<0) {
-  //     newI = 3
-  //   }else if(newI > 3) {
-  //     newI = 0
-  //   }
-  //   this.bearing = allDirections[newI]
-  //   // console.log("Changed Direction.")
-  //   // console.log("coordinates: ", this.coordinates[0], ', ', this.coordinates[1])
-  //   // console.log("direction: ", this.bearing)
-  // }
 
   turnEast() {
     if(this.bearing !== 'west') {
@@ -100,51 +74,19 @@ class Robot {
         this.goToCoords(--this.coordinates[0], this.coordinates[1])
         break
     }
+    this.tail.push([this.coordinates[0], this.coordinates[1]])
+    if (this.coordinates[0]===this.app.candy[0] && this.coordinates[1]===this.app.candy[1]) {
+      this.eatCandy()
+    }
+    if(this.tail.length > this.tailLength) {
+      let removeCell = this.tail.shift()
+      this.app.updateTailDisplay(removeCell)
+    }
   }
 
-  // advance() {
-  //   switch(this.bearing) {
-  //     case "north":
-  //       this.coordinates[1]++
-  //       break
-  //     case "east":
-  //       this.coordinates[0]++
-  //       break
-  //     case "south":
-  //       this.coordinates[1]--
-  //       break
-  //     case "west":
-  //       this.coordinates[0]--
-  //       break
-  //   }
-  //   // console.log("Advanced one space.")
-  //   // console.log("coordinates: ", this.coordinates[0], ', ', this.coordinates[1])
-  //   // console.log("direction: ", this.bearing)
-  // }
-  //
-  // interpretInstructions(str) {
-  //   const instructionArr = []
-  //   str.split("").forEach(function (char) {
-  //     switch(char) {
-  //       case "L":
-  //         instructionArr.push("turnLeft")
-  //         break
-  //       case "R":
-  //         instructionArr.push("turnRight")
-  //         break
-  //       case "A":
-  //         instructionArr.push("advance")
-  //         break
-  //     }
-  //   })
-  //   return instructionArr
-  // }
-  //
-  // evaluateInstructions(str) {
-  //   this.interpretInstructions(str).forEach(fxnString => {
-  //     // console.log(fxnString)
-  //     this[fxnString]()
-  //   })
-  // }
+  eatCandy() {
+    this.tailLength += 2
+    this.app.randomCandy()
+  }
 
 }

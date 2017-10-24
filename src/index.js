@@ -2,10 +2,9 @@ window.onload = function() {
 
   const app = new App
   app.showSnakeStats()
-  window.addEventListener('keydown', app.keyPressed.bind(app))
+  window.addEventListener('keydown', app.turnSnake.bind(app))
 
-
-  timer = setInterval(app.moveSnake.bind(app), 500)
+  timer = setInterval(app.moveSnake.bind(app), 100)
 
 
 //     ev.key
